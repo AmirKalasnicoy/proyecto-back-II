@@ -6,7 +6,6 @@ import { createHash, isValidPassword } from '../utils.js';
 import dotenv from "dotenv";
 dotenv.config();
 
-// Clave secreta desde .env
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 // Estrategias
@@ -14,11 +13,11 @@ const LocalStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 
-// Extraer token de cookies firmadas
+// ✅ Corregido: leer cookies firmadas
 const cookieExtractor = req => {
   let token = null;
-  if (req && req.cookies) {
-    token = req.cookies['jwtCookieToken'];
+  if (req && req.signedCookies) {
+    token = req.signedCookies['jwtCookieToken'];
   }
   return token;
 };
@@ -90,7 +89,6 @@ const initializePassport = () => {
     }
   ));
 
-  // Serializacion
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });

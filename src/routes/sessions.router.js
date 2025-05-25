@@ -1,15 +1,15 @@
 import { Router } from 'express';
+import passport from 'passport';
 import userModel from '../models/user.model.js';
-import { createHash } from '../utils.js'; 
+import { createHash, generateJWToken } from '../utils.js';
 
 const router = Router();
 
-//  Ruta: POST /api/sessions/register
+// 📥 Ruta: POST /api/sessions/register
 router.post('/register', async (req, res) => {
   const { first_name, last_name, email, age, password } = req.body;
 
   try {
-    // Verificar si el usuario ya existe
     const exist = await userModel.findOne({ email });
     if (exist) {
       return res.status(400).send({
@@ -18,7 +18,6 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    // Crear nuevo usuario con contraseña encriptada
     const newUser = {
       first_name,
       last_name,
@@ -44,10 +43,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-//login
-import passport from 'passport';
-import { generateJWToken } from '../utils.js';
-
+// 🔐 LOGIN - Passport Local + JWT
 router.post('/login', passport.authenticate('login', { session: false }), async (req, res) => {
   try {
     const user = req.user;
@@ -55,17 +51,18 @@ router.post('/login', passport.authenticate('login', { session: false }), async 
 
     res.cookie('jwtCookieToken', token, {
       httpOnly: true,
-      signed: true,
+      signed: true, // ✅ COOKIE FIRMADA
     });
 
     res.send({ status: "success", message: "Login successful" });
+
+    // También podés redirigir al perfil si querés:
+    // res.redirect('/users');
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     res.status(500).send({ status: "error", message: "Login failed" });
   }
 });
-
-
 
 export default router;
 
