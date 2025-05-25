@@ -6,7 +6,7 @@ import passport from 'passport';
 import dotenv from 'dotenv';
 //.env
 dotenv.config();
-// 👉 __dirname para rutas y vistas
+// __dirname para rutas y vistas
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export default __dirname;
@@ -15,19 +15,19 @@ export default __dirname;
 export const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-// ✅ Comparar contraseña con hash guardado
+// Comparar contraseña con hash guardado
 export const isValidPassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
 
-// 🔑 Clave secreta para JWT
+// Clave secreta para JWT
 export const PRIVATE_KEY = process.env.PRIVATE_KEY
 
-// 🧾 Generar JWT (se guarda en cookie firmada)
+// Generar JWT (se guarda en cookie firmada)
 export const generateJWToken = (user) => {
   return jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' });
 };
 
-// 🔒 Middleware de autenticación con Passport
+// Middleware de autenticación con Passport
 export const passportCall = (strategy) => {
   return async (req, res, next) => {
     passport.authenticate(strategy, function (err, user, info) {
@@ -45,7 +45,7 @@ export const passportCall = (strategy) => {
   };
 };
 
-// 🔐 Middleware para verificar roles
+//  Middleware para verificar roles
 export const authorization = (role) => {
   return (req, res, next) => {
     if (!req.user)

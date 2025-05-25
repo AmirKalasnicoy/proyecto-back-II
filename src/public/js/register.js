@@ -23,7 +23,7 @@ form.addEventListener('submit', async e => {
             alert("✅ Usuario registrado con éxito!");
             window.location.replace('/users/login');
         } else if (response.status === 400) {
-            alert("⚠️ El usuario ya existe");
+            alert("❌ El usuario ya existe");
         } else {
             alert("❌ Error al crear el usuario.");
         }

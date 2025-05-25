@@ -5,7 +5,7 @@ import { createHash, generateJWToken } from '../utils.js';
 
 const router = Router();
 
-// 📥 Ruta: POST /api/sessions/register
+// Ruta: POST /api/sessions/register
 router.post('/register', async (req, res) => {
   const { first_name, last_name, email, age, password } = req.body;
 
@@ -43,7 +43,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// 🔐 LOGIN - Passport Local + JWT
+// LOGIN - Passport Local + JWT
 router.post('/login', passport.authenticate('login', { session: false }), async (req, res) => {
   try {
     const user = req.user;
@@ -51,13 +51,12 @@ router.post('/login', passport.authenticate('login', { session: false }), async 
 
     res.cookie('jwtCookieToken', token, {
       httpOnly: true,
-      signed: true, // ✅ COOKIE FIRMADA
+      signed: true, // 
     });
 
     res.send({ status: "success", message: "Login successful" });
 
-    // También podés redirigir al perfil si querés:
-    // res.redirect('/users');
+
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).send({ status: "error", message: "Login failed" });

@@ -13,7 +13,7 @@ const LocalStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 
-// ✅ Corregido: leer cookies firmadas
+// leer cookies firmadas
 const cookieExtractor = req => {
   let token = null;
   if (req && req.signedCookies) {
