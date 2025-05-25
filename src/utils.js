@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import dotenv from 'dotenv';
+//.env
 dotenv.config();
 // 👉 __dirname para rutas y vistas
 const __filename = fileURLToPath(import.meta.url);
