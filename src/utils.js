@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
+
 //.env
 dotenv.config();
 // __dirname para rutas y vistas
@@ -56,4 +58,26 @@ export const authorization = (role) => {
 
     next();
   };
+};
+
+export const sendRecoveryEmail = async (email, token) => {
+  const resetLink = `http://localhost:9090/api/sessions/reset-password?token=${token}`;
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS, 
+    },
+  });
+
+  await transporter.sendMail({
+    from: 'CoderApp <no-reply@coder.com>',
+    to: email,
+    subject: 'Restablecer contraseña',
+    html: `
+      <p>Hacé clic en el siguiente enlace para restablecer tu contraseña:</p>
+      <a href="${resetLink}">${resetLink}</a>
+    `,
+  });
 };
