@@ -26,8 +26,21 @@ export const PRIVATE_KEY = process.env.PRIVATE_KEY
 
 // Generar JWT (se guarda en cookie firmada)
 export const generateJWToken = (user) => {
-  return jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' });
+  return jwt.sign(
+    {
+      user: {
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role
+      }
+    },
+    PRIVATE_KEY,
+    { expiresIn: '24h' }
+  );
 };
+
 
 // Middleware de autenticación con Passport
 export const passportCall = (strategy) => {

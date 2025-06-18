@@ -1,5 +1,9 @@
+import passport from 'passport';
 
 export const authMiddleware = (req, res, next) => {
-  if (req.user) return next();
-  return res.redirect('/login');
+  passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err || !user) return res.redirect('/login');
+    req.user = user;
+    next();
+  })(req, res, next);
 };

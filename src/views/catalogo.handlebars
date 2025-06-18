@@ -1,15 +1,14 @@
-<h2>Catálogo de productos</h2>
+<h2>Catálogo de Productos</h2>
 
-<p>Bienvenido {{user.first_name}} {{user.last_name}}</p>
-
-<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-  {{#each productos}}
-    <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-      <img src="{{this.imagen}}" alt="{{this.nombre}}" width="100%">
-      <h3>{{this.nombre}}</h3>
-      <p>{{this.descripcion}}</p>
-      <p><strong>${{this.precio}}</strong></p>
-    </div>
-  {{/each}}
-</div>
+{{#each products}}
+  <div style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
+    <h3>{{nombre}}</h3>
+    <p>{{descripcion}}</p>
+    <p><strong>Precio:</strong> ${{precio}}</p>
+    <p><strong>Stock:</strong> {{stock}}</p>
+    {{#if imagen}}
+      <img src="{{imagen}}" alt="Imagen de {{nombre}}" width="150" />
+    {{/if}}
+  </div>
+{{/each}}
 

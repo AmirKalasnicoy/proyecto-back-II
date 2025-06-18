@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.js';
+import productModel from '../models/product.model.js';
 const router = Router();
 
 router.get('/', (req, res) => {
@@ -14,14 +15,14 @@ router.get('/reset-password', (req, res) => {
   res.render('reset-password', { token });
 });
 
-router.get(
-  '/catalogo',
-  passport.authenticate('jwt', { session: false }), 
-  authMiddleware,
-  (req, res) => {
-    res.render('catalogo', { user: req.user });
-  }
-);
+router.get('/catalogo', authMiddleware, async (req, res) => {
+  const productos = await productModel.find().lean(); 
+
+  res.render('catalogo', {
+    user: req.user,
+    products: productos
+  });
+});
 
 
 export default router;
