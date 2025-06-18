@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import handlebars from 'express-handlebars';
+import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -13,6 +14,7 @@ import viewsRouter from './routes/views.routes.js';
 import usersViewRouter from './routes/users.views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import passwordRouter from './routes/password.router.js';
+import productsRouter from './routes/products.router.js';
 
 dotenv.config();
 
@@ -37,28 +39,37 @@ const connectMongoDB = async () => {
 };
 connectMongoDB();
 
-// Middlewares
+// Middlewares base
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser("CoderS3cr3tC0d3")); 
 app.use(express.static(__dirname + '/public'));
+
+// 📌 Agregá esto:
+app.use(session({
+  secret: 'CoderS3cr3tC0d3',
+  resave: false,
+  saveUninitialized: false
+}));
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session()); 
 
 // Handlebars setup
 app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
-// Passport
-initializePassport();
-app.use(passport.initialize());
-
 // Rutas
 app.use('/', viewsRouter);                  
 app.use('/users', usersViewRouter);          
 app.use('/api/sessions', sessionsRouter);   
 app.use('/api/sessions', passwordRouter); 
+app.use('/products', productsRouter);
 
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
