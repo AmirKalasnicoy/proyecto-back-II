@@ -15,6 +15,8 @@ import usersViewRouter from './routes/users.views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import passwordRouter from './routes/password.router.js';
 import productsRouter from './routes/products.router.js';
+import cartRouter from './routes/cart.router.js';
+import './helpers/handlebars.js'
 
 dotenv.config();
 
@@ -57,7 +59,13 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 
 // Handlebars setup
-app.engine('handlebars', handlebars.engine());
+const hbs = handlebars.create({
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  }
+});
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
@@ -67,6 +75,7 @@ app.use('/users', usersViewRouter);
 app.use('/api/sessions', sessionsRouter);   
 app.use('/api/sessions', passwordRouter); 
 app.use('/products', productsRouter);
+app.use('/cart', cartRouter);
 
 // Iniciar servidor
 app.listen(PORT, () => {

@@ -1,3 +1,4 @@
+
 <h2>Catálogo de Productos</h2>
 
 {{#each products}}
@@ -9,6 +10,34 @@
     {{#if imagen}}
       <img src="{{imagen}}" alt="Imagen de {{nombre}}" width="150" />
     {{/if}}
+    <button onclick='addToCart("{{_id}}")'>Agregar al carrito</button>
   </div>
 {{/each}}
+
+<hr>
+<a href="/cart">🛒 Ver carrito</a>
+
+<script>
+  const user = {{{json user}}};
+
+  function addToCart(productId) {
+    fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: 1
+      })
+    })
+    .then(() => {
+      alert(" Producto agregado al carrito");
+    })
+    .catch(err => {
+      console.error("Error al agregar al carrito:", err);
+      alert(" Ocurrió un error al agregar");
+    });
+  }
+</script>
 
