@@ -10,9 +10,48 @@
       <p>Total: ${{multiply this.productId.precio this.quantity}}</p>
     </div>
   {{/each}}
+
+  <button onclick="finalizarCompra()">Finalizar Compra</button>
+
+  <div id="ticketInfo" style="margin-top: 20px;"></div>
+
+  <script>
+    function finalizarCompra() {
+      fetch('/cart/checkout', {
+        method: 'POST'
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ticket) {
+          const ticketHtml = `
+            <h3> Compra Finalizada</h3>
+            <p><strong>Código:</strong> ${data.ticket.code}</p>
+            <p><strong>Fecha:</strong> ${new Date(data.ticket.date).toLocaleString()}</p>
+            <p><strong>Total:</strong> $${data.ticket.amount}</p>
+          `;
+          document.getElementById('ticketInfo').innerHTML = ticketHtml;
+
+          setTimeout(() => {
+            window.location.href = '/catalogo';
+          }, 3000);
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Hubo un error al finalizar la compra');
+      });
+    }
+  </script>
+
 {{else}}
   <p>El carrito está vacío.</p>
 {{/if}}
+
+
+
+
 
 
 

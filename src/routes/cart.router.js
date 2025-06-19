@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { addToCart, getCartByUserId } from '../services/cart.service.js';
+import { addToCart, getCartByUserId, purchaseCart } from '../services/cart.service.js';
 import { authMiddleware } from '../middlewares/auth.js';
+
 
 const router = Router();
 
@@ -26,6 +27,29 @@ router.get('/', authMiddleware, async (req, res) => {
     res.status(500).send('Error al cargar el carrito');
   }
 });
+
+router.post('/checkout', authMiddleware, async (req, res) => {
+  const userId = req.user._id;
+  const userEmail = req.user.email;
+
+  try {
+    const ticket = await purchaseCart (userId, userEmail);
+
+    res.status(200).json({
+      message: '¡Compra finalizada con éxito!',
+      ticket: {
+        code: ticket.code,
+        amount: ticket.amount,
+        date: ticket.purchase_datetime,
+      }
+    });
+  } catch (error) {
+    console.error('Error al finalizar la compra:', error.message);
+    res.status(500).json({ message: error.message || 'Error al finalizar la compra' });
+  }
+});
+
+
 
 export default router;
 
