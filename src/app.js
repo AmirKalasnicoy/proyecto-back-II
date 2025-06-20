@@ -74,7 +74,7 @@ app.use('/', viewsRouter);
 app.use('/users', usersViewRouter);          
 app.use('/api/sessions', sessionsRouter);   
 app.use('/api/sessions', passwordRouter); 
-app.use('/products', productsRouter);
+app.use('/catalogo', productsRouter);
 app.use('/cart', cartRouter);
 
 // Iniciar servidor
