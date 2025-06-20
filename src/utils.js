@@ -6,14 +6,13 @@ import passport from 'passport';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 
-//.env
 dotenv.config();
-// __dirname para rutas y vistas
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export default __dirname;
 
-// 🔐 Encriptar contraseña
+// Encriptar contraseña
 export const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
@@ -21,10 +20,10 @@ export const createHash = (password) =>
 export const isValidPassword = (user, password) =>
   bcrypt.compareSync(password, user.password);
 
-// Clave secreta para JWT
-export const PRIVATE_KEY = process.env.PRIVATE_KEY
+// Clave secreta JWT
+export const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
-// Generar JWT (se guarda en cookie firmada)
+// Generar JWT (anidado bajo `user`)
 export const generateJWToken = (user) => {
   return jwt.sign(
     {
@@ -33,6 +32,7 @@ export const generateJWToken = (user) => {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
+        age:user.age,
         role: user.role
       }
     },
@@ -41,8 +41,7 @@ export const generateJWToken = (user) => {
   );
 };
 
-
-// Middleware de autenticación con Passport
+//  Middleware para usar estrategia de Passport
 export const passportCall = (strategy) => {
   return async (req, res, next) => {
     passport.authenticate(strategy, function (err, user, info) {
@@ -50,29 +49,31 @@ export const passportCall = (strategy) => {
 
       if (!user) {
         return res.status(401).send({
-          error: info?.messages || info.toString(),
+          error: (info && info.message) || 'Unauthorized'
         });
       }
 
-      req.user = user;
+      req.user = user; 
       next();
     })(req, res, next);
   };
 };
 
-//  Middleware para verificar roles
-export const authorization = (role) => {
+//  Middleware de autorización por rol
+export const authorization = (allowedRoles = []) => {
   return (req, res, next) => {
     if (!req.user)
       return res.status(401).send("Unauthorized: No user in request");
 
-    if (req.user.role !== role)
+    if (!allowedRoles.includes(req.user.role))
       return res.status(403).send("Forbidden: Insufficient permissions");
 
     next();
   };
 };
 
+
+// Envío de mail para recuperación de contraseña
 export const sendRecoveryEmail = async (email, token) => {
   const resetLink = `http://localhost:9090/api/sessions/reset-password?token=${token}`;
 

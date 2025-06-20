@@ -17,11 +17,12 @@ router.get('/register', (req, res) => {
 // perfil
 router.get('/',
   passportCall('jwt'),
-  authorization('user'), 
+  authorization(['user', 'admin']), 
   (req, res) => {
     res.render('profile', {
       user: req.user
     });
   });
+
 
 export default router;
