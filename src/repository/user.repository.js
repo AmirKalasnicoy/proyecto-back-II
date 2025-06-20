@@ -1,11 +1,7 @@
-
-import userModel from '../models/user.model.js';
+import { findUserByEmail, createUser } from '../dao/user.dao.js';
 
 export const userRepository = {
-  findByEmail: async (email) => {
-    return await userModel.findOne({ email });
-  },
-  create: async (userData) => {
-    return await userModel.create(userData);
-  }
+  findByEmail: findUserByEmail,
+  create: createUser
 };
+
